@@ -1,43 +1,77 @@
+
+/*
+	
+	Basic Letter Swapping program
+	
+	 
+	--> Program to swap two characters in a file
+	--> File name will be provided by user, as an arguement by the user
+	--> File will be mapped Using mmap
+	--> Letters will be Swapped, and the final output will be Saved in a new file called "EditedFile.txt"
+*/
+
+// LIBS
 #include <stdio.h>
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <unistd.h>
-/* 
-	--> Program to swap two words in a file
-	--> File name will be provided by user, as an arguement by the user
-	--> File will be mapped Using mmap
-*/
+#include <string.h>
 
 
 #define MAX_ARGS 4
 
+// UNDER CONSTRUCTION
+//void SwapWord(char* word1, char* word2){
+//	int i = 0;
+// 	int len_2 = strlen(word2);
+//   printf("String Lenght{2}: %d\n", len_2);
+//   printf("Swapping..\n");
+//   char *temp = word1;
+//
+//   for (i = 0; i <= len_2; i++)
+//      temp[i] = word2[i];
+//     
+//}
+
 void PrintManual(){
 	printf("\n--------------------------------------------------\n");
-	printf("Please provide a file name, along with the two words you want to swap\n");
-	printf("EXAMPLE: \n --> [Swap -f filename word1 word2]\n");
-	printf("word1 will be swapped by word2 in the provided file\n");	
-}
+	printf("Please provide a file name, along with the two characters you want to swap\n");
+	printf("EXAMPLE: \n --> [Swap filename letter1 letter2]\n");
+	printf("letter1 will be swapped by letter2 in the provided file\n");	
+	printf("After Completion, The program will create a new file called EditedFile.txt, which will be the final outcome\n");
+	printf("Arg Count Must be 4(Including File Name)\n");
+}	
 
 
 
 int main(int argc, char* argv[]){
 	//printf("%d\n", argc);
 
-	if (argc < MAX_ARGS){	
+	if (argc != MAX_ARGS)
+			PrintManual();
+	
+	
+	//int i;
+	//	for (i = 1; i < argc; i++){
+	//		printf("Arg[%d]: %s\n", i, argv[i]);
+	//	}
+	//	
+
+	const char* First_Letter = argv[2];
+	const char* Second_Letter = argv[3];
+	if(strlen(First_Letter) > 1){
+		printf("Word 1 has to be a Character not a string...\n");
 		PrintManual();
-		printf("\n\nERROR: Not enough arguements provided...\n");
 		exit(1);
 	}
-	int i;
-	for (i = 1; i < argc; i++){
-		printf("Arg[%d]: %s\n", i, argv[i]);
+	
+	if(strlen(Second_Letter) > 1){
+		printf("Word 2 has to be a Character not a string...\n");
+		PrintManual();
+		exit(1);
 	}
-	
-	//char* Word1 = argv[3];
-	//char* word2 = argv[4];
-	
 	const char* FileName = argv[1];
 	// Opening file, to get FileDescriptor
  	int FileDesc = open(FileName, O_RDONLY);
@@ -54,31 +88,37 @@ int main(int argc, char* argv[]){
 		printf("Error Getting File Statistics...\n");
 		exit(1);
 	}
-
-	
-
 	//Lets map the file
-	void *Pointer =  mmap(NULL, statbuf.st_size, PROT_READ | PROT_WRITE, 
+	char *Text =  mmap(NULL, statbuf.st_size, PROT_READ | PROT_WRITE, 
 						MAP_PRIVATE,
                   FileDesc, 0);
 
    // Incase maping Failed
-	if (Pointer == MAP_FAILED){
+	if (Text == MAP_FAILED){
 		printf("Mapping Failed..\n");
 		exit(1);
 	}
 	close(FileDesc);
-	int size_read = write(1, Pointer, statbuf.st_size);
-	if (size_read != statbuf.st_size){
-		printf("Size read != size provided\n");
-		exit(1);
+	
+	// Lets Start Swapping...
+	int j =0;
+	char* CpyText = Text;
+	int FileDesc2 = open("EditedFile.txt", O_CREAT | O_RDWR);
+	for (j = 0; j< statbuf.st_size; j++){
+		if (*(CpyText + j) == *First_Letter)
+			*(CpyText + j) = *Second_Letter;
 	}
-	int error_unmap = munmap(Pointer, statbuf.st_size);
+	
+	//Writing Swapped characters to new fileDesc
+	ssize_t read = write(FileDesc2, Text, statbuf.st_size);
+	close(FileDesc2);
+	
+	//Unmapping
+	int error_unmap = munmap(Text, statbuf.st_size);
 	if (error_unmap < 0){
 		printf("Unmapping Failed...\n");
 		exit(1);
 	}
 
-	
 	return 0;
 }

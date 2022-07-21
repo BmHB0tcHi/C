@@ -3,4 +3,4 @@ Swap: Swap.c
 
 
 clean:
-	rm -rf Swap
+	rm -rf Swap EditedFile.txt
