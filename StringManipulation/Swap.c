@@ -22,7 +22,6 @@
 
 #define MAX_ARGS 4
 
-
 void PrintManual(){
 	printf("\n--------------------------------------------------\n");
 	printf("Please provide a file name, along with the two characters you want to swap\n");
@@ -31,8 +30,6 @@ void PrintManual(){
 	printf("After Completion, The program will create a new file called EditedFile.txt, which will be the final outcome\n");
 	printf("Arg Count Must be 4(Including File Name)\n");
 }	
-
-
 
 int main(int argc, char* argv[]){
 	//printf("%d\n", argc);
