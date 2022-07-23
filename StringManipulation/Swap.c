@@ -22,18 +22,6 @@
 
 #define MAX_ARGS 4
 
-// UNDER CONSTRUCTION
-//void SwapWord(char* word1, char* word2){
-//	int i = 0;
-// 	int len_2 = strlen(word2);
-//   printf("String Lenght{2}: %d\n", len_2);
-//   printf("Swapping..\n");
-//   char *temp = word1;
-//
-//   for (i = 0; i <= len_2; i++)
-//      temp[i] = word2[i];
-//     
-//}
 
 void PrintManual(){
 	printf("\n--------------------------------------------------\n");
@@ -52,13 +40,6 @@ int main(int argc, char* argv[]){
 	if (argc != MAX_ARGS)
 			PrintManual();
 	
-	
-	//int i;
-	//	for (i = 1; i < argc; i++){
-	//		printf("Arg[%d]: %s\n", i, argv[i]);
-	//	}
-	//	
-
 	const char* First_Letter = argv[2];
 	const char* Second_Letter = argv[3];
 	if(strlen(First_Letter) > 1){
